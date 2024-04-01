@@ -79,10 +79,16 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   if (session?.line_items?.data) {
     const products = session?.line_items?.data.map((item) => {
-      return {
-        name: item?.price?.product?.name,
-        imageUrl: item?.price?.product?.images[0],
+      if (
+        typeof item?.price?.product === 'object' &&
+        item.price.product.deleted !== true
+      ) {
+        return {
+          name: item?.price?.product?.name,
+          imageUrl: item?.price?.product?.images[0],
+        }
       }
+      return undefined
     })
     return {
       props: {
